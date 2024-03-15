@@ -8,7 +8,6 @@ BugReports: https://github.com/seungjae2525/GSAMU/issues
 Imports: 
     dplyr,
     ggplot2,
-    ggstance,
     methods,
     optiSolve,
     RColorBrewer,

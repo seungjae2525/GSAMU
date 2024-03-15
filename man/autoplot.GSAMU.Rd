@@ -42,7 +42,6 @@ Plot for sensitivity analysis results
 ############################################
 ## Real data analysis for binary outcome ##
 ############################################
-options(rgl.useNULL=TRUE)
 ### Log transformed of exposures. continuous variables are standardized
 library(readr)
 ul=paste0("https://static-content.springer.com/esm/art\%3A10.1186\%2Fs12940-020-00644-4/",

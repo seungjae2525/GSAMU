@@ -22,6 +22,5 @@
 #' @importFrom ggplot2 autoplot
 #' @importFrom stats cor glm binomial coef formula poisson quantile sd
 #' @importFrom methods is
-#' @importFrom ggstance position_dodgev
 ## usethis namespace: end
 NULL

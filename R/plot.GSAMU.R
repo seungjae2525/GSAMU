@@ -18,7 +18,6 @@ ggplot2::autoplot
 #' ############################################
 #' ## Real data analysis for binary outcome ##
 #' ############################################
-#' options(rgl.useNULL=TRUE)
 #' ### Log transformed of exposures. continuous variables are standardized
 #' library(readr)
 #' ul=paste0("https://static-content.springer.com/esm/art%3A10.1186%2Fs12940-020-00644-4/",
@@ -230,10 +229,10 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
     ### Without bootstrap results
     fp <- ggplot(sens.result) +
       geom_linerange(aes(x=coef, y=label, xmin=Lower.SI, xmax=Upper.SI, color=factor(delta)),
-                     position=position_dodgev(height=0.7),
+                     position=position_dodge2(0.7),
                      linewidth=width.SI) + # line width
       geom_point(aes(x=coef, y=label, color=factor(delta)), size=point.size, # point size
-                 position=position_dodgev(height=0.7)) +
+                 position=position_dodge2(0.7)) +
       scale_colour_manual(name=expression(bold(italic(delta)~"(delta)")), values=myColors,
                           breaks=rev(levels(factor(sens.result$delta))),
                           guide=guide_legend(override.aes=list(shape=NA))) +
@@ -263,15 +262,15 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
     ## With bootstrap results
     fp <- ggplot(sens.result) +
       geom_linerange(aes(x=coef, y=label, xmin=Lower.CI, xmax=Upper.CI, color=factor(delta)),
-                     position=position_dodgev(height=0.7),
+                     position=position_dodge2(0.7),
                      linewidth=width.CI) + # line width
       guides(colour=guide_legend(override.aes=list(size=2, # legend point size
                                                    linewidth=1))) + # legend line width
       geom_linerange(aes(x=coef, y=label, xmin=Lower.SI, xmax=Upper.SI, color=factor(delta)),
-                     position=position_dodgev(height=0.7),
+                     position=position_dodge2(0.7),
                      linewidth=width.SI) + # line width
       geom_point(aes(x=coef, y=label, color=factor(delta)), size=point.size, # point size
-                 position=position_dodgev(height=0.7)) +
+                 position=position_dodge2(0.7)) +
       scale_colour_manual(name=expression(bold(italic("\u03B4")~"(delta)")), values=myColors,
                           breaks=rev(levels(factor(sens.result$delta))),
                           guide=guide_legend(override.aes=list(shape=NA))) +
