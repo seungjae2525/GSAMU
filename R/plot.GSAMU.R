@@ -18,6 +18,7 @@ ggplot2::autoplot
 #' ############################################
 #' ## Real data analysis for binary outcome ##
 #' ############################################
+#' options(rgl.useNULL=TRUE)
 #' ### Log transformed of exposures. continuous variables are standardized
 #' library(readr)
 #' ul=paste0("https://static-content.springer.com/esm/art%3A10.1186%2Fs12940-020-00644-4/",
@@ -233,7 +234,7 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
                      linewidth=width.SI) + # line width
       geom_point(aes(x=coef, y=label, color=factor(delta)), size=point.size, # point size
                  position=position_dodgev(height=0.7)) +
-      scale_colour_manual(name=expression(bold(italic("\u03B4")~"(delta)")), values=myColors,
+      scale_colour_manual(name=expression(bold(italic(delta)~"(delta)")), values=myColors,
                           breaks=rev(levels(factor(sens.result$delta))),
                           guide=guide_legend(override.aes=list(shape=NA))) +
       # coord_cartesian(xlim=c(-0.25, 2)) +  # xlim
