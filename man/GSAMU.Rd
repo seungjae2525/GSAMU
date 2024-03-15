@@ -13,8 +13,6 @@ GSAMU(
   exposure,
   delta.range,
   delta.diff,
-  k,
-  p,
   bound,
   bootsCI = TRUE,
   B = 1000,
@@ -27,35 +25,31 @@ GSAMU(
 \arguments{
 \item{data}{A data frame in which contains outcome, measured confounders, exposures.}
 
-\item{outcome}{The name of variable for outcome.}
+\item{outcome}{The name of variable for outcome. For count and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., c("survivaltime", "status")).}
 
-\item{outcome.type}{The type of outcome variable.}
+\item{outcome.type}{The type of outcome variable. Possible values are "count" (for count outcome), "binary" (for binary outcome), or "timetoevent" (for time-to-event outcome).}
 
-\item{link}{The specification for the model link function.}
+\item{link}{The specification for the model link function. Possible values are "log" (for count outcome), "probit" (for binary outcome), or "logit" (for binary outcome). Not used for outcome.type = "timetoevent".}
 
-\item{confounder}{The vector of variable names for confounders}
+\item{confounder}{The vector of variable names for confounders. See Examples.}
 
-\item{exposure}{The vector of variable names for exposures}
+\item{exposure}{The vector of variable names for exposures. See Examples.}
 
 \item{delta.range}{The range of \eqn{(\delta_{min}, \delta_{max})}. See Examples.}
 
 \item{delta.diff}{The increment of the sequence of \eqn{\delta}. Default: 0.1.}
 
-\item{k}{The number of measured confounders.}
-
-\item{p}{The number of exposures.}
-
 \item{bound}{The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is c(\eqn{\phi_{1,min}, \ldots, \phi_{k,min}, } \eqn{\rho_{1,min}, \ldots, \rho_{p,min}, \phi_{1,max}, \ldots, \phi_{k,max}, \rho_{1,max}, \ldots, \rho_{p,max}}). See Examples.}
 
-\item{bootsCI}{The number of exposures. Default: TRUE.}
+\item{bootsCI}{Logical value: if TRUE, The process to obtain the bootstrap confidence interval is carried out. Default: TRUE.}
 
-\item{B}{The number of exposures. Default: 1000}
+\item{B}{The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000}
 
-\item{seed}{The number of exposures. Default: 231111.}
+\item{seed}{The value of seed number when bootstrap works. Not used for bootsCI=FALSE. Default: 231111.}
 
-\item{verbose}{The number of exposures. Default: TRUE.}
+\item{verbose}{Logical value: if TRUE, bootstrap process is output every 100 times. Not used for bootsCI=FALSE. Default: TRUE.}
 
-\item{report.result}{Whether to output the result table. Default: TRUE.}
+\item{report.result}{Logical value: if TRUE, the summarized result table is printed. Default: TRUE.}
 
 \item{decimal.p}{Number of digits after the decimal point of numbers appearing in the result table. Default: 3.}
 }
@@ -64,16 +58,15 @@ An object of class \code{condSens}. The object is a data.frame with the followin
 \item{label}{Exposures}
 \item{delta}{The values of \eqn{\delta}}
 \item{coef}{The coefficients of exposures}
-\item{Lower.SI}{The lower sensitivity interval of conditional single- and joint-exposure effect}
-\item{Upper.SI}{The upper sensitivity interval of conditional single- and joint-exposure effect}
+\item{Lower.SI}{The lower sensitivity interval of conditional single- or joint-exposure effect}
+\item{Upper.SI}{The upper sensitivity interval of conditional single- or joint-exposure effect}
 \item{Lower.CI}{The lower confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed.}
 \item{Upper.CI}{The upper confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed.}
 
 To generate the plot of results for the \code{GSAMU}, use the \code{\link{autoplot.GSAMU}} functions.
 }
 \description{
-\code{GSAMU()} is the main function of GSAMU package and
-performs the sensitivity analysis for estimating the sensitivity interval(s).
+\code{GSAMU()} is the main function of GSAMU package. It performs a novel sensitivity analysis for non-Gaussian and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
 }
 \details{
 See Lee et al. (2024+) for details.
@@ -125,13 +118,6 @@ names(usedata) <- c("triglyceride_b", "sex", "race", "age",
                     "alpha-Tocopherol", "gamma-Tocopherol")
 data_r4 <- usedata
 
-# ## Scaled dataset
-# data_r4 <- usedata
-# data_r4[,c(2:9)] <- scale(data_r4[,c(2:9)])
-
-# change delta up to 0.44
-uprimeupperrange <- 0.44
-
 ## glm fitting (working regression model)
 fit.glm <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)
 summary(fit.glm)
@@ -140,10 +126,6 @@ round(cbind("Est"=exp(coef(fit.glm)), exp(confint(fit.glm)),
 
 ##
 beta <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)$coefficient
-
-##
-k <- 3
-p <- 5
 
 ##
 bound <- c(## upper bound
@@ -167,7 +149,7 @@ binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE,
                     report.result=TRUE, decimal.p=3)
 \dontrun{
@@ -176,7 +158,7 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE,
                     report.result=TRUE, decimal.p=3)
 }

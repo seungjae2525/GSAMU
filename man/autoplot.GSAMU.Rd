@@ -3,6 +3,9 @@
 \name{autoplot.GSAMU}
 \alias{autoplot.GSAMU}
 \title{Plot for sensitivity analysis results}
+\source{
+\code{\link[ggplot2]{autoplot}} in \code{ggplot2} package
+}
 \usage{
 \method{autoplot}{GSAMU}(
   object,
@@ -29,9 +32,9 @@
 
 \item{axis.text.size}{Size of x and y axis text. Default: 12.}
 
-\item{legend.text.size}{label text size. Default: 4.}
+\item{legend.text.size}{Size of legend text. Default: 4.}
 
-\item{myxlim}{The minimum and maximum values of x-axis.}
+\item{myxlim}{The minimum and maximum values of x-axis. Default: NULL.}
 
 \item{...}{Further arguments (currently not used).}
 }
@@ -85,13 +88,6 @@ names(usedata) <- c("triglyceride_b", "sex", "race", "age",
                     "alpha-Tocopherol", "gamma-Tocopherol")
 data_r4 <- usedata
 
-# ## Scaled dataset
-# data_r4 <- usedata
-# data_r4[,c(2:9)] <- scale(data_r4[,c(2:9)])
-
-# change delta up to 0.44
-uprimeupperrange <- 0.44
-
 ## glm fitting (working regression model)
 fit.glm <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)
 summary(fit.glm)
@@ -100,10 +96,6 @@ round(cbind("Est"=exp(coef(fit.glm)), exp(confint(fit.glm)),
 
 ##
 beta <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)$coefficient
-
-##
-k <- 3
-p <- 5
 
 ##
 bound <- c(## upper bound
@@ -127,7 +119,7 @@ binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE,
                     report.result=TRUE, decimal.p=3)
 autoplot(object=binary.re0, point.size=2.75, width.SI=1, width.CI=0.6,
@@ -139,12 +131,12 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE,
                     report.result=TRUE, decimal.p=3)
 autoplot(object=binary.re1, point.size=2.75, width.SI=1.55, width.CI=0.6,
          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
-         myxlim=NULL)
+         myxlim=myxlim=c(-2, 4))
 }
 
 }
