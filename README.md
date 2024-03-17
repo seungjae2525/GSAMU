@@ -87,7 +87,7 @@ cox.re <- GSAMU(data=dataset,
                 report.result=TRUE, decimal.p=3)
 ```
 
-You can also resulted plots, for example:
+You can also see the resulting plots, for example:
 
 ``` r
 autoplot(object=count.re, point.size=2.75, width.SI=1.55, width.CI=0.6,
