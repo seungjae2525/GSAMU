@@ -10,7 +10,7 @@ Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 [![Package
 version](https://img.shields.io/badge/GitHub-1.0.0-orange.svg)](https://github.com/seungjae2525/GSAMU/)
 [![minimal R
-version](https://img.shields.io/badge/R-v4.0.0+-blue.svg)](https://cran.r-project.org/)
+version](https://img.shields.io/badge/R-v4.1.0+-blue.svg)](https://cran.r-project.org/)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml)
