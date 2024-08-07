@@ -199,13 +199,9 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
                     paste0("[", sprintf(paste0("%.", digits, "f"), xx.temp$Lower.CI), ", ",
                            sprintf(paste0("%.", digits, "f"), xx.temp$Upper.CI), "]"))
       tmp1 <- data.frame(tmp1)
-      tmp1 <- rbind(c("Effect size", 'Sensitivity interval', 'Confidence interval'),
-                    tmp1)
+      tmp1 <- rbind(c("Effect size", 'Sensitivity interval', 'Confidence interval'), tmp1)
       rownames(tmp1) <- c("", paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
       colnames(tmp1) <- c(effect.name, "", "")
-      if (max(delta[-which.0.delta]) < 0) {
-        tmp1 <- tmp1[rev(1:nrow(tmp1)), , drop=FALSE]
-      }
       print(tmp1)
       cat("\n")
     }
