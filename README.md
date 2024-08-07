@@ -88,11 +88,11 @@ print(cox.re)
 
 ## For time-to-event outcome with the additive hazard model, 
 ah.re <- GSAMU(data=dataset, 
-                outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="ah", 
-                confounder=c("L1", "L2", "L3"),
-                exposure=c("X1", "X2", "X3", "X4"),
-                delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
-                bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
+               outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="ah", 
+               confounder=c("L1", "L2", "L3"),
+               exposure=c("X1", "X2", "X3", "X4"),
+               delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+               bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(ah.re)
 ```
 
