@@ -309,7 +309,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
             formula_str <- as.formula(paste("Surv(time, status) ~ ",
                                             paste(c(paste0("const(`", confounder, "`)"),
                                                     paste0("const(`", exposure, "`)")), collapse = " + ")))
-            fitmodel <- aalen(formula=formula_str, data=data_boot) # using timereg package
+            fitmodel.boots <- aalen(formula=formula_str, data=data_boot) # using timereg package
           }
         }
         re.boots <- GSAMU.count.hazard(data=data_boot, fitmodel=fitmodel.boots,

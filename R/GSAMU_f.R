@@ -123,7 +123,7 @@ GSAMU.count.hazard <- function(data, fitmodel,
     # Time to event outcome (time, status)
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
     # beta <- fitmodel$coef # k+p vector; using af
-    beta <- as.vector(coef(fitmodel, digits=Inf)[,1]) # k+p vector; using aalen
+    beta <- coef(fitmodel, digits=Inf)[,1] # k+p vector; using aalen
 
     ## calculate correlation matrix
     corrmatrix <- cor(data[,-c(1,2)])
