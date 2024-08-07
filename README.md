@@ -10,7 +10,7 @@ Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 [![Package
 version](https://img.shields.io/badge/GitHub-1.0.0-orange.svg)](https://github.com/seungjae2525/GSAMU/)
 [![minimal R
-version](https://img.shields.io/badge/R-v4.0.0+-blue.svg)](https://cran.r-project.org/)
+version](https://img.shields.io/badge/R-v4.1.0+-blue.svg)](https://cran.r-project.org/)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml)
@@ -96,7 +96,7 @@ ah.re <- GSAMU(data=dataset,
 print(ah.re)
 ```
 
-You can also resulted plots, for example:
+You can also see the resulting plots, for example:
 
 ``` r
 autoplot(object=count.re, point.size=2.75, width.SI=1.55, width.CI=0.6,
