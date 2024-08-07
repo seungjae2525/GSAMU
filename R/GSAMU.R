@@ -191,6 +191,12 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   ##
   k <- length(confounder)
   p <- length(exposure)
+  if (k == 0) {
+    stop("There must be at least one confounder.")
+  }
+  if (p == 0) {
+    stop("There must be at least one exposure.")
+  }
   if (length(bound) != (k + p)*2) {
     stop("\"bound\" is incorrect. Set again. See the Arguments explanation.")
   } else if (sum(bound[1:(k+p)] >= bound[(k+p+1):(k+p+k+p)]) != k+p) {

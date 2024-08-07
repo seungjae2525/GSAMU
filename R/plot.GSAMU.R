@@ -203,6 +203,12 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
     } else {
       myColors <- c("#81D4FA", "#29B6F6", "#0288D1", "#01579B", "#01309b")
     }
+  } else if (length(alldelta) == 6) {
+    if (c0upper < 0){
+      myColors <- c("#002060", "#01309b", "#01579B", "#0288D1", "#29B6F6", "#81D4FA")
+    } else {
+      myColors <- c("#81D4FA", "#29B6F6", "#0288D1", "#01579B", "#01309b", "#002060")
+    }
   } else {
     stop("Warnings!")
   }
