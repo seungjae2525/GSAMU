@@ -119,7 +119,7 @@ GSAMU.count.hazard <- function(data, fitmodel,
     ## calculate correlation matrix
     corrmatrix <- cor(data[,-c(1,2)])
     invcor <- solve(corrmatrix)
-  } else if (is(fitmodel)[1] == "ah") {
+  } else if (is(fitmodel)[1] == "aalen") {
     # Time to event outcome (time, status)
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
     # beta <- fitmodel$coef # k+p vector; using af
