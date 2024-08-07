@@ -120,7 +120,7 @@ binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 autoplot(object=binary.re0, point.size=2.75, width.SI=1, width.CI=0.6,
          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
@@ -133,7 +133,7 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 autoplot(object=binary.re1, point.size=2.75, width.SI=1.55, width.CI=0.6,
          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,

@@ -11,8 +11,7 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' @param hazard.model The specification for the hazard model. Possible values are "coxph" (for Cox PH model) or "ah" (for additive hazard model). Not used for outcome.type = "binary" or "count".
 #' @param confounder The vector of variable names for confounders. See Examples.
 #' @param exposure The vector of variable names for exposures. See Examples.
-#' @param delta.range The range of \eqn{(\delta_{min}, \delta_{max})}. See Examples.
-#' @param delta.diff The increment of the sequence of \eqn{\delta}. Default: 0.1.
+#' @param delta The values of \eqn{\delta}s. The length of delta must be less than 5. See Examples.
 #' @param bound The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,max}, \ldots, \phi_{k,max}, } \eqn{\rho_{1,max}, \ldots, \rho_{p,max}, \phi_{1,min}, \ldots, \phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}}). See Examples.
 #' @param bootsCI Logical value: if TRUE, The process to obtain the bootstrap confidence interval is carried out. Default: TRUE.
 #' @param B The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000
@@ -112,7 +111,7 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
 #'                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 #' binary.re0$result
 #'
@@ -123,7 +122,7 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
 #'                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 #' binary.re1$result
 #' }
@@ -141,7 +140,7 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' @export
 GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
                   confounder, exposure,
-                  delta.range, delta.diff, bound,
+                  delta, bound,
                   bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE) {
   ##############################################################################
   ##
@@ -198,6 +197,12 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
     stop("There is a case in \"bound\" where the lower bound is greater than the upper bound.
          Reset the order of \"bound\". See the Arguments explanation.")
   }
+  ##
+  if (length(delta) < 1) {
+    stop("The length of \"delta\" should be larger than 0. Set again.")
+  } else if (length(delta) > 5) {
+    stop("The length of \"delta\" should be smaller than 5. Set again.")
+  }
 
   ##############################################################################
   ## Rearrange data
@@ -226,8 +231,8 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
       ## Fitting the additive hazard model
       # fitmodel <- ah(Surv(time, status) ~ ., data=data) # using addhazard package
       formula_str <- as.formula(paste("Surv(time, status) ~ ",
-                                         paste(c(paste0("const(`", confounder, "`)"),
-                                                 paste0("const(`", exposure, "`)")), collapse = " + ")))
+                                      paste(c(paste0("const(`", confounder, "`)"),
+                                              paste0("const(`", exposure, "`)")), collapse = " + ")))
       fitmodel <- aalen(formula=formula_str, data=data) # using timereg package
     }
 
@@ -261,10 +266,10 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   ## Sensitivity analysis
   if (outcome.type == "binary") {
     sens.results <- GSAMU.binary(data=data, fitmodel=fitmodel,
-                                 delta.range=delta.range, delta.diff=delta.diff, k=k, p=p, bound=bound)
+                                 delta=delta, k=k, p=p, bound=bound)
   } else if (outcome.type %in% c("count", "timetoevent")) {
     sens.results <- GSAMU.count.hazard(data=data, fitmodel=fitmodel,
-                                       delta.range=delta.range, delta.diff=delta.diff, k=k, p=p, bound=bound)
+                                       delta=delta, k=k, p=p, bound=bound)
   }
 
   ## Bootstrap confidence interval
@@ -289,7 +294,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
           fitmodel.boots <- glm(formula(fitmodel), family=binomial(link="logit"), data=data_boot)
         }
         re.boots <- GSAMU.binary(data=data_boot, fitmodel=fitmodel.boots,
-                                 delta.range=delta.range, delta.diff=delta.diff, k=k, p=p, bound=bound)
+                                 delta=delta, k=k, p=p, bound=bound)
 
       } else if (outcome.type %in% c("count", "timetoevent")) {
         if (outcome.type == "count") {
@@ -308,7 +313,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
           }
         }
         re.boots <- GSAMU.count.hazard(data=data_boot, fitmodel=fitmodel.boots,
-                                       delta.range=delta.range, delta.diff=delta.diff, k=k, p=p, bound=bound)
+                                       delta=delta, k=k, p=p, bound=bound)
       }
 
       sens.results.boots[[ii]] <- re.boots

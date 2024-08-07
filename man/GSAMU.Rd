@@ -12,8 +12,7 @@ GSAMU(
   hazard.model = NULL,
   confounder,
   exposure,
-  delta.range,
-  delta.diff,
+  delta,
   bound,
   bootsCI = TRUE,
   B = 1000,
@@ -36,9 +35,7 @@ GSAMU(
 
 \item{exposure}{The vector of variable names for exposures. See Examples.}
 
-\item{delta.range}{The range of \eqn{(\delta_{min}, \delta_{max})}. See Examples.}
-
-\item{delta.diff}{The increment of the sequence of \eqn{\delta}. Default: 0.1.}
+\item{delta}{The values of \eqn{\delta}s. The length of delta must be less than 5. See Examples.}
 
 \item{bound}{The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,max}, \ldots, \phi_{k,max}, } \eqn{\rho_{1,max}, \ldots, \rho_{p,max}, \phi_{1,min}, \ldots, \phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}}). See Examples.}
 
@@ -148,7 +145,7 @@ binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 binary.re0$result
 
@@ -159,7 +156,7 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 binary.re1$result
 }

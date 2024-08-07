@@ -1,6 +1,6 @@
 ##
 GSAMU.binary <- function(data, fitmodel,
-                         delta.range, delta.diff, k, p, bound){
+                         delta, k, p, bound){
 
   ##############################################################################
   ## calculate correlation matrix
@@ -11,13 +11,7 @@ GSAMU.binary <- function(data, fitmodel,
   beta <- fitmodel$coefficients[-1] # k+p vector
 
   ## Set the candidate of delta
-  if (delta.range[2] >= 0) {
-    delta.range <- sort(delta.range, decreasing=FALSE)
-  } else {
-    delta.range <- sort(delta.range, decreasing=TRUE)
-  }
-  alldelta <- c(0, seq(delta.range[1], delta.range[2], by=delta.diff))
-  alldelta <- sort(alldelta)
+  alldelta <- sort(c(0, delta))
 
   ## Probit or Logit
   if (fitmodel$family$link == "logit") {
@@ -114,7 +108,7 @@ GSAMU.binary <- function(data, fitmodel,
 
 ##
 GSAMU.count.hazard <- function(data, fitmodel,
-                               delta.range, delta.diff, k, p, bound){
+                               delta, k, p, bound){
   ##############################################################################
   ## Coefficients of cox or glm model
   if (is(fitmodel)[1] == "coxph") {
@@ -146,14 +140,7 @@ GSAMU.count.hazard <- function(data, fitmodel,
 
   ##############################################################################
   ## Set the candidate of delta
-  if (delta.range[2] >= 0) {
-    delta.range <- sort(delta.range, decreasing=FALSE)
-  } else {
-    delta.range <- sort(delta.range, decreasing=TRUE)
-    delta.diff <- -delta.diff
-  }
-  alldelta <- c(0, seq(delta.range[1], delta.range[2], by=delta.diff))
-  alldelta <- sort(alldelta)
+  alldelta <- sort(c(0, delta))
 
   ##############################################################################
   val <- bound

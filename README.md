@@ -10,7 +10,7 @@ Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 [![Package
 version](https://img.shields.io/badge/GitHub-1.0.0-orange.svg)](https://github.com/seungjae2525/GSAMU/)
 [![minimal R
-version](https://img.shields.io/badge/R-v4.1.0+-blue.svg)](https://cran.r-project.org/)
+version](https://img.shields.io/badge/R-v4.0.0+-blue.svg)](https://cran.r-project.org/)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/seungjae2525/GSAMU/actions/workflows/R-CMD-check.yaml)
@@ -55,7 +55,7 @@ count.re <- GSAMU(data=dataset,
                   outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                   confounder=c("L1", "L2", "L3"),
                   exposure=c("X1", "X2", "X3", "X4"),
-                  delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                  delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                   bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(count.re)
 
@@ -64,7 +64,7 @@ binary.re1 <- GSAMU(data=dataset,
                     outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                     confounder=c("L1", "L2", "L3"),
                     exposure=c("X1", "X2", "X3", "X4"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re1)
 
@@ -73,7 +73,7 @@ binary.re2 <- GSAMU(data=dataset,
                     outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                     confounder=c("L1", "L2", "L3"),
                     exposure=c("X1", "X2", "X3", "X4"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re2)
 
@@ -82,7 +82,7 @@ cox.re <- GSAMU(data=dataset,
                 outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="coxph", 
                 confounder=c("L1", "L2", "L3"),
                 exposure=c("X1", "X2", "X3", "X4"),
-                delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                 bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(cox.re)
 
@@ -91,12 +91,12 @@ ah.re <- GSAMU(data=dataset,
                outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="ah", 
                confounder=c("L1", "L2", "L3"),
                exposure=c("X1", "X2", "X3", "X4"),
-               delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+               delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(ah.re)
 ```
 
-You can also see the resulting plots, for example:
+You can also resulted plots, for example:
 
 ``` r
 autoplot(object=count.re, point.size=2.75, width.SI=1.55, width.CI=0.6,

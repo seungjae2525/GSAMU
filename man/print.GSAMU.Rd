@@ -98,7 +98,7 @@ binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re0)
 
@@ -109,7 +109,7 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re1)
 }

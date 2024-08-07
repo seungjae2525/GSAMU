@@ -87,7 +87,7 @@
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
 #'                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 #' print(binary.re0)
 #'
@@ -98,7 +98,7 @@
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
+#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
 #'                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 #' print(binary.re1)
 #' }
@@ -147,8 +147,8 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
   print(AA[c((1+length(xx$confounder)):nrow(AA)), ])
 
   ##
-  lambda.digit <- sapply(unique(xx$result$delta), function(x) match(TRUE, round(x, 1:20) == x))
-  spr <- sprintf(paste0("%.",max(lambda.digit),"f"), unique(xx$result$delta))
+  delta <- unique(xx$result$delta)
+  which.0.delta <- which(delta == 0)
 
   ##
   if (xx$outcome.type == "count") {
@@ -175,13 +175,16 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
     for (i in 1:length(unique.label)) {
       cat(paste0(i, ". ", c(xx$exposure, "Joint effect")[i], " \n"))
       xx.temp <- xx$result[xx$result$label == unique.label[i], ]
-      xx.temp <- xx.temp[-1, ] # remove row with delta = 0
+      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta = 0
       tmp1 <- paste0(sprintf(paste0("%.", digits, "f"), xx.temp$coef), " [",
                      sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
                      sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]")
       tmp1 <-data.frame(tmp1)
-      rownames(tmp1) <- paste0(rep(expression(delta), times=nrow(xx.temp)), '=', spr[-1])
+      rownames(tmp1) <- paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta])
       colnames(tmp1) <- c(effect.name)
+      if (max(delta[-which.0.delta]) < 0) {
+        tmp1 <- tmp1[rev(1:nrow(tmp1)), , drop=FALSE]
+      }
       print(tmp1)
       cat("\n")
     }
@@ -189,7 +192,7 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
     for (i in 1:length(unique.label)) {
       cat(paste0(i, ". ", c(xx$exposure, "Joint effect")[i], " \n"))
       xx.temp <- xx$result[xx$result$label == unique.label[i], ]
-      xx.temp <- xx.temp[-1, ] # remove row with delta = 0
+      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta = 0
       tmp1 <- cbind(sprintf(paste0("%.", digits, "f"), xx.temp$coef),
                     paste0("[", sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
                            sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]"),
@@ -198,8 +201,11 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
       tmp1 <- data.frame(tmp1)
       tmp1 <- rbind(c("Effect size", 'Sensitivity interval', 'Confidence interval'),
                     tmp1)
-      rownames(tmp1) <- c("", paste0(rep(expression(delta), times=nrow(xx.temp)), '=', spr[-1]))
+      rownames(tmp1) <- c("", paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
       colnames(tmp1) <- c(effect.name, "", "")
+      if (max(delta[-which.0.delta]) < 0) {
+        tmp1 <- tmp1[rev(1:nrow(tmp1)), , drop=FALSE]
+      }
       print(tmp1)
       cat("\n")
     }

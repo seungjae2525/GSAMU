@@ -53,7 +53,7 @@ count.re <- GSAMU(data=dataset,
                   outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                   confounder=c("L1", "L2", "L3"),
                   exposure=c("X1", "X2", "X3", "X4"),
-                  delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                  delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                   bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(count.re)
 
@@ -62,7 +62,7 @@ binary.re1 <- GSAMU(data=dataset,
                     outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                     confounder=c("L1", "L2", "L3"),
                     exposure=c("X1", "X2", "X3", "X4"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re1)
 
@@ -71,7 +71,7 @@ binary.re2 <- GSAMU(data=dataset,
                     outcome="Y", outcome.type="count", link="log", hazard.model=NULL, 
                     confounder=c("L1", "L2", "L3"),
                     exposure=c("X1", "X2", "X3", "X4"),
-                    delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                    delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(binary.re2)
 
@@ -80,7 +80,7 @@ cox.re <- GSAMU(data=dataset,
                 outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="coxph", 
                 confounder=c("L1", "L2", "L3"),
                 exposure=c("X1", "X2", "X3", "X4"),
-                delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+                delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                 bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(cox.re)
 
@@ -89,7 +89,7 @@ ah.re <- GSAMU(data=dataset,
                outcome=c("time", "status"), outcome.type="timetoevent", link=NULL, hazard.model="ah", 
                confounder=c("L1", "L2", "L3"),
                exposure=c("X1", "X2", "X3", "X4"),
-               delta.range=c(0.11, 0.44), delta.diff=0.11, k=k, p=p, bound=bound,
+               delta=c(0.11, 0.22, 0.33, 0.44), k=k, p=p, bound=bound,
                bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 print(ah.re)
 ```
