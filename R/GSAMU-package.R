@@ -18,9 +18,10 @@
 #' @import ggplot2
 #' @import readr
 #' @import RColorBrewer
+#' @import timereg
 #'
 #' @importFrom ggplot2 autoplot
-#' @importFrom stats cor glm binomial coef formula poisson quantile sd
+#' @importFrom stats cor glm binomial coef formula poisson quantile sd as.formula
 #' @importFrom methods is
 ## usethis namespace: end
 NULL

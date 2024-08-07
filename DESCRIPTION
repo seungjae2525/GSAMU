@@ -1,14 +1,18 @@
 Package: GSAMU
-Version: 1.0
-Title: Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes
+Version: 1.1
+Title: GSAMU: Sensitivity analysis for effects of multiple exposures in
+        the presence of unmeasured confounding: non-Gaussian and
+        time-to-event outcomes
 Description: GSAMU is a package for accommodating statistical models involving non-Gaussian and time-to-event outcome variables and multiple exposures, proving indispensable in the context of unmeasured confounding. 
 License: MIT + file LICENSE
-URL: https://sites.google.com/view/lwj221/research/softwares, https://github.com/seungjae2525/GSAMU
+URL: https://sites.google.com/view/lwj221/research/softwares,
+        https://github.com/seungjae2525/GSAMU
 BugReports: https://github.com/seungjae2525/GSAMU/issues
-Imports: dplyr, ggplot2, methods, optiSolve, RColorBrewer, readr, stats, survival
+Imports: dplyr, ggplot2, methods, optiSolve, RColorBrewer, readr,
+        stats, survival, timereg
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
 Authors@R: 
   c(person(given = "Seungjae",
@@ -28,3 +32,5 @@ Author: Seungjae Lee [aut, cre],
     Boram Jeong [aut],
     Donghwan Lee [aut],
     Woojoo Lee [aut]
+Packaged: 2024-08-07 07:48:34 UTC; seung
+Maintainer: Seungjae Lee <seungjae2525@gmail.com>

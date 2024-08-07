@@ -8,7 +8,8 @@ GSAMU(
   data,
   outcome,
   outcome.type,
-  link,
+  link = NULL,
+  hazard.model = NULL,
   confounder,
   exposure,
   delta.range,
@@ -17,9 +18,7 @@ GSAMU(
   bootsCI = TRUE,
   B = 1000,
   seed = 231111,
-  verbose = TRUE,
-  report.result = TRUE,
-  decimal.p = 3
+  verbose = TRUE
 )
 }
 \arguments{
@@ -31,6 +30,8 @@ GSAMU(
 
 \item{link}{The specification for the model link function. Possible values are "log" (for count outcome), "probit" (for binary outcome), or "logit" (for binary outcome). Not used for outcome.type = "timetoevent".}
 
+\item{hazard.model}{The specification for the hazard model. Possible values are "coxph" (for Cox PH model) or "ah" (for additive hazard model). Not used for outcome.type = "binary" or "count".}
+
 \item{confounder}{The vector of variable names for confounders. See Examples.}
 
 \item{exposure}{The vector of variable names for exposures. See Examples.}
@@ -39,7 +40,7 @@ GSAMU(
 
 \item{delta.diff}{The increment of the sequence of \eqn{\delta}. Default: 0.1.}
 
-\item{bound}{The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is c(\eqn{\phi_{1,min}, \ldots, \phi_{k,min}, } \eqn{\rho_{1,min}, \ldots, \rho_{p,min}, \phi_{1,max}, \ldots, \phi_{k,max}, \rho_{1,max}, \ldots, \rho_{p,max}}). See Examples.}
+\item{bound}{The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,max}, \ldots, \phi_{k,max}, } \eqn{\rho_{1,max}, \ldots, \rho_{p,max}, \phi_{1,min}, \ldots, \phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}}). See Examples.}
 
 \item{bootsCI}{Logical value: if TRUE, The process to obtain the bootstrap confidence interval is carried out. Default: TRUE.}
 
@@ -48,13 +49,9 @@ GSAMU(
 \item{seed}{The value of seed number when bootstrap works. Not used for bootsCI=FALSE. Default: 231111.}
 
 \item{verbose}{Logical value: if TRUE, bootstrap process is output every 100 times. Not used for bootsCI=FALSE. Default: TRUE.}
-
-\item{report.result}{Logical value: if TRUE, the summarized result table is printed. Default: TRUE.}
-
-\item{decimal.p}{Number of digits after the decimal point of numbers appearing in the result table. Default: 3.}
 }
 \value{
-An object of class \code{condSens}. The object is a data.frame with the following components: 1. only.sig=FALSE
+An object of class \code{condSens}. The object is a data.frame with the following components:
 \item{label}{Exposures}
 \item{delta}{The values of \eqn{\delta}}
 \item{coef}{The coefficients of exposures}
@@ -63,7 +60,8 @@ An object of class \code{condSens}. The object is a data.frame with the followin
 \item{Lower.CI}{The lower confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed.}
 \item{Upper.CI}{The upper confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed.}
 
-To generate the plot of results for the \code{GSAMU}, use the \code{\link{autoplot.GSAMU}} functions.
+The results for the \code{GSAMU} are printed with the \code{\link{print.GSAMU}} function.
+To generate the plot of results for the \code{GSAMU}, use the \code{\link{autoplot.GSAMU}} function.
 }
 \description{
 \code{GSAMU()} is the main function of GSAMU package. It performs a novel sensitivity analysis for non-Gaussian and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
@@ -129,7 +127,7 @@ beta <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)$coeff
 
 ##
 bound <- c(## upper bound
-  # male   race   age
+  # sex   race   age
   0.32, 0.5, 0.29,
   # Retinyl palmitate    Retinol  trans-beta-carotene
   rep(0.15, 3),
@@ -137,7 +135,7 @@ bound <- c(## upper bound
   rep(0.10, 2),
 
   ## lower bound
-  # male   race   age
+  # sex   race   age
   0.0, 0.0, 0.0,
   # Retinyl palmitate    Retinol  trans-beta-carotene
   rep(-0.19, 3),
@@ -146,21 +144,24 @@ bound <- c(## upper bound
 
 ## Sensitivity analysis
 binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
+                    hazard.model=NULL,
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
-                    bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE,
-                    report.result=TRUE, decimal.p=3)
+                    bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
+binary.re0$result
+
 \dontrun{
 ## Sensitivity analysis with bootstrap percentile confidence interval
 binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
+                    hazard.model=NULL,
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
-                    bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE,
-                    report.result=TRUE, decimal.p=3)
+                    bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
+binary.re1$result
 }
 
 }
@@ -170,6 +171,6 @@ Sensitivity analysis for effects of multiple exposures in the presence of unmeas
 \emph{xxx}. DOI: xxx.
 }
 \seealso{
-\code{\link[GSAMU]{autoplot.GSAMU}}
+\code{\link[GSAMU]{print.GSAMU}}, \code{\link[GSAMU]{autoplot.GSAMU}}
 }
-\keyword{methods}
+\keyword{Methods}

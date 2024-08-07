@@ -113,14 +113,23 @@ GSAMU.binary <- function(data, fitmodel,
 }
 
 ##
-GSAMU.count.cox <- function(data, fitmodel,
-                            delta.range, delta.diff, k, p, bound){
+GSAMU.count.hazard <- function(data, fitmodel,
+                               delta.range, delta.diff, k, p, bound){
   ##############################################################################
   ## Coefficients of cox or glm model
   if (is(fitmodel)[1] == "coxph") {
     # Time to event outcome (time, status)
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
-    beta <- fitmodel$coefficients# k+p vector
+    beta <- fitmodel$coefficients # k+p vector
+
+    ## calculate correlation matrix
+    corrmatrix <- cor(data[,-c(1,2)])
+    invcor <- solve(corrmatrix)
+  } else if (is(fitmodel)[1] == "ah") {
+    # Time to event outcome (time, status)
+    # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
+    # beta <- fitmodel$coef # k+p vector; using af
+    beta <- as.vector(coef(fitmodel, digits=Inf)[,1]) # k+p vector; using aalen
 
     ## calculate correlation matrix
     corrmatrix <- cor(data[,-c(1,2)])

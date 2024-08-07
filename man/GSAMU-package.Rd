@@ -3,7 +3,7 @@
 \docType{package}
 \name{GSAMU-package}
 \alias{GSAMU-package}
-\title{GSAMU: Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes}
+\title{GSAMU: GSAMU: Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes}
 \description{
 GSAMU is a package for accommodating statistical models involving non-Gaussian and time-to-event outcome variables and multiple exposures, proving indispensable in the context of unmeasured confounding.
 }

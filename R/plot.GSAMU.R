@@ -72,7 +72,7 @@ ggplot2::autoplot
 #'
 #' ##
 #' bound <- c(## upper bound
-#'   # male   race   age
+#'   # sex   race   age
 #'   0.32, 0.5, 0.29,
 #'   # Retinyl palmitate    Retinol  trans-beta-carotene
 #'   rep(0.15, 3),
@@ -80,7 +80,7 @@ ggplot2::autoplot
 #'   rep(0.10, 2),
 #'
 #'   ## lower bound
-#'   # male   race   age
+#'   # sex   race   age
 #'   0.0, 0.0, 0.0,
 #'   # Retinyl palmitate    Retinol  trans-beta-carotene
 #'   rep(-0.19, 3),
@@ -89,28 +89,31 @@ ggplot2::autoplot
 #'
 #' ## Sensitivity analysis
 #' binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
+#'                     hazard.model=NULL,
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
 #'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
-#'                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE,
-#'                     report.result=TRUE, decimal.p=3)
+#'                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 #' autoplot(object=binary.re0, point.size=2.75, width.SI=1, width.CI=0.6,
 #'          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
 #'          myxlim=NULL)
+#'
 #' \dontrun{
 #' ## Sensitivity analysis with bootstrap percentile confidence interval
 #' binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
+#'                     hazard.model=NULL,
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
 #'                     delta.range=c(0.11, 0.44), delta.diff=0.11, bound=bound,
-#'                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE,
-#'                     report.result=TRUE, decimal.p=3)
+#'                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 #' autoplot(object=binary.re1, point.size=2.75, width.SI=1.55, width.CI=0.6,
 #'          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
 #'          myxlim=myxlim=c(-2, 4))
 #' }
+#'
+#' @keywords Plot
 #'
 #' @seealso
 #'  \code{\link[GSAMU]{GSAMU}}
@@ -144,7 +147,11 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
   if (outcome.type == "count") {
     xaxis.name <- "Conditional log-relative ratio"
   } else if (outcome.type == "timetoevent") {
-    xaxis.name <- "Conditional log-hazard ratio"
+    if (sens.result$hazard.model == "coxph") {
+      xaxis.name <- "Conditional log-hazard ratio"
+    } else {
+      xaxis.name <- "Conditional hazard difference"
+    }
   } else {
     if (sens.result$link == "logit") {
       xaxis.name <- "Conditional log-odds ratio"
