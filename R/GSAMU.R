@@ -265,10 +265,10 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   ##############################################################################
   ## Sensitivity analysis
   if (outcome.type == "binary") {
-    sens.results <- GSAMU.binary(data=data, fitmodel=fitmodel,
+    sens.results <- GSAMU.binary(data=data, fitmodel=fitmodel, exposure=exposure,
                                  delta=delta, k=k, p=p, bound=bound)
   } else if (outcome.type %in% c("count", "timetoevent")) {
-    sens.results <- GSAMU.count.hazard(data=data, fitmodel=fitmodel,
+    sens.results <- GSAMU.count.hazard(data=data, fitmodel=fitmodel, exposure=exposure,
                                        delta=delta, k=k, p=p, bound=bound)
   }
 
@@ -293,7 +293,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
         } else if (fitmodel$family$link == "logit") {
           fitmodel.boots <- glm(formula(fitmodel), family=binomial(link="logit"), data=data_boot)
         }
-        re.boots <- GSAMU.binary(data=data_boot, fitmodel=fitmodel.boots,
+        re.boots <- GSAMU.binary(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
                                  delta=delta, k=k, p=p, bound=bound)
 
       } else if (outcome.type %in% c("count", "timetoevent")) {
@@ -312,7 +312,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
             fitmodel.boots <- aalen(formula=formula_str, data=data_boot) # using timereg package
           }
         }
-        re.boots <- GSAMU.count.hazard(data=data_boot, fitmodel=fitmodel.boots,
+        re.boots <- GSAMU.count.hazard(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
                                        delta=delta, k=k, p=p, bound=bound)
       }
 

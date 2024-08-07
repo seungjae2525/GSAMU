@@ -1,5 +1,5 @@
 ##
-GSAMU.binary <- function(data, fitmodel,
+GSAMU.binary <- function(data, fitmodel, exposure,
                          delta, k, p, bound){
 
   ##############################################################################
@@ -107,7 +107,7 @@ GSAMU.binary <- function(data, fitmodel,
 }
 
 ##
-GSAMU.count.hazard <- function(data, fitmodel,
+GSAMU.count.hazard <- function(data, fitmodel, exposure,
                                delta, k, p, bound){
   ##############################################################################
   ## Coefficients of cox or glm model
@@ -177,7 +177,9 @@ GSAMU.count.hazard <- function(data, fitmodel,
   resultdf <- as.data.frame(t(cbind(singlebias, Joint)))
 
   coeff <- beta[-c(1:k)]
-  label <- c(names(coeff), "Joint effect")
+
+  # label <- c(names(coeff), "Joint effect")
+  label <- c(exposure, "Joint effect")
 
   jointeffcoef <- sum(coeff)
 
