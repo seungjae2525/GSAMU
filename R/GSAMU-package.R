@@ -2,7 +2,7 @@
 #' @aliases GSAMU-package
 "_PACKAGE"
 
-#' @title Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes
+#' @title Generalized Sensitivity Analysis for Multiple Exposures in Presence of Unmeasured Confounding
 #'
 #' @name GSAMU-package
 #'

@@ -7,7 +7,7 @@ ggplot2::autoplot
 #' @param object An object for class \code{GSAMU}.
 #' @param point.size Point size of the the lower and upper bound of the sensitivity range. Default: 1.4.
 #' @param width.SI Width of horizon line which represents the sensitivity interval. Default: 2.75.
-#' @param width.CI Width of horizon line which represents the confidence interval of the population sensitivity interval. Default: 1.55.
+#' @param width.CI Width of horizon line which represents the confidence interval of the population sensitivity interval. Not used for bootsCI=FALSE in \code{GSAMU}. Default: 1.55.
 #' @param axis.title.x.size Size of x axis title. Default: 15.
 #' @param axis.text.size Size of x and y axis text. Default: 12.
 #' @param legend.text.size Size of legend text. Default: 4.
@@ -153,7 +153,7 @@ autoplot_GSAMU <- function(sens.result, point.size=2.75, width.SI=1.55, width.CI
     if (sens.result$link == "logit") {
       xaxis.name <- "Conditional log-odds ratio"
     } else {
-      xaxis.name <- "Conditional effects"
+      xaxis.name <- "Conditional exposure effects"
     }
   }
 

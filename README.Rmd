@@ -36,7 +36,7 @@ Lee S, Jeong B, Lee D, Lee W (2024): Sensitivity analysis for effects of multipl
 Installation using R package `remotes`:
 
 ```r
-if (!require("remotes", quietly=TRUE)) install.packages("remotes") # if devtools not already installed
+if (!require("remotes", quietly=TRUE)) install.packages("remotes") # if remotes not already installed
 remotes::install_github("seungjae2525/GSAMU")
 library(GSAMU)
 ```

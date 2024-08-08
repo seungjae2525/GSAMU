@@ -21,9 +21,9 @@ GSAMU(
 )
 }
 \arguments{
-\item{data}{A data frame in which contains outcome, measured confounders, exposures.}
+\item{data}{A data frame in which contains outcome, measured confounders, and exposures.}
 
-\item{outcome}{The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., c("survivaltime", "status")).}
+\item{outcome}{The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., outcome=c("survivaltime", "status")).}
 
 \item{outcome.type}{The type of outcome variable. Possible values are "continuous" (for continuous outcome), "count" (for count outcome), "binary" (for binary outcome), or "timetoevent" (for time-to-event outcome).}
 
@@ -39,7 +39,7 @@ GSAMU(
 
 \item{bound}{The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,min}, \ldots, } \eqn{\phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}, \phi_{1,max}, \ldots, \phi_{k,max}, \rho_{1,max}, \ldots, \rho_{p,max}}). See Examples.}
 
-\item{bootsCI}{Logical value: if TRUE, The process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.}
+\item{bootsCI}{Logical value: if TRUE, the process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.}
 
 \item{B}{The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000}
 

@@ -38,7 +38,7 @@ non-Gaussian and time-to-event outcomes. submitted.
 Installation using R package `remotes`:
 
 ``` r
-if (!require("remotes", quietly=TRUE)) install.packages("remotes") # if devtools not already installed
+if (!require("remotes", quietly=TRUE)) install.packages("remotes") # if remotes not already installed
 remotes::install_github("seungjae2525/GSAMU")
 library(GSAMU)
 ```

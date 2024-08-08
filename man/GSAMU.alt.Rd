@@ -22,9 +22,9 @@ GSAMU.alt(
 )
 }
 \arguments{
-\item{data}{A data frame in which contains outcome, measured confounders, exposures.}
+\item{data}{A data frame in which contains outcome, measured confounders, and exposures.}
 
-\item{outcome}{The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., c("survivaltime", "status")).}
+\item{outcome}{The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., outcome=c("survivaltime", "status")).}
 
 \item{outcome.type}{The type of outcome variable. Possible values are "continuous" (for continuous outcome), "count" (for count outcome), "binary" (for binary outcome), or "timetoevent" (for time-to-event outcome).}
 
@@ -40,9 +40,9 @@ GSAMU.alt(
 
 \item{bound}{The range of \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\rho_{1,min}, \ldots, \rho_{p,min}, \rho_{1,max}, \ldots, } \eqn{\rho_{p,max}}). See Examples.}
 
-\item{bound.sigma2}{The range of \eqn{\sigma_{c}^{2}}. The length of bound.sigma2 must be 1 (constant variance) or 2 (lower and upper bounds of variance). See Examples.}
+\item{bound.sigma2}{The range of \eqn{\sigma_{c}^{2}}. The length of bound.sigma2 must be 1 (for constant variance) or 2 (for lower and upper bounds of variance). See Examples.}
 
-\item{bootsCI}{Logical value: if TRUE, The process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.}
+\item{bootsCI}{Logical value: if TRUE, the process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.}
 
 \item{B}{The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000}
 
@@ -64,7 +64,7 @@ The results for the \code{GSAMU.alt} are printed with the \code{\link{print.GSAM
 To generate the plot of results for the \code{GSAMU.alt}, use the \code{\link{autoplot.GSAMU}} function.
 }
 \description{
-\code{GSAMU.alt()} is the main function of GSAMU package. It performs a novel sensitivity analysis for Gaussian, non-Gaussian, and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
+\code{GSAMU.alt()} is an alternative sensitivity analysis method using assumption for the conditional distribution of U | (L, X) rather than for the joint distribution of (U, L, X).
 }
 \details{
 See Lee et al. (2024+) for details.

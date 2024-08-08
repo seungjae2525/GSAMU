@@ -4,8 +4,8 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #'
 #' @description \code{GSAMU()} is the main function of GSAMU package. It performs a novel sensitivity analysis for Gaussian, non-Gaussian, and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
 #'
-#' @param data A data frame in which contains outcome, measured confounders, exposures.
-#' @param outcome The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., c("survivaltime", "status")).
+#' @param data A data frame in which contains outcome, measured confounders, and exposures.
+#' @param outcome The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., outcome=c("survivaltime", "status")).
 #' @param outcome.type The type of outcome variable. Possible values are "continuous" (for continuous outcome), "count" (for count outcome), "binary" (for binary outcome), or "timetoevent" (for time-to-event outcome).
 #' @param link The specification for the model link function. Possible values are "identity" (for continuous outcome), "log" (for count outcome), "probit" (for binary outcome), or "logit" (for binary outcome). Not used for outcome.type="timetoevent".
 #' @param hazard.model The specification for the hazard model. Possible values are "coxph" (for Cox PH model) or "ah" (for additive hazard model). Not used for outcome.type="continuous", "binary", or "count".
@@ -13,7 +13,7 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' @param exposure The vector of variable names for exposures. See Examples.
 #' @param delta The values of \eqn{\delta}s. The length of delta must be less than 6. See Examples.
 #' @param bound The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,min}, \ldots, } \eqn{\phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}, \phi_{1,max}, \ldots, \phi_{k,max}, \rho_{1,max}, \ldots, \rho_{p,max}}). See Examples.
-#' @param bootsCI Logical value: if TRUE, The process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.
+#' @param bootsCI Logical value: if TRUE, the process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.
 #' @param B The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000
 #' @param seed The value of seed number when bootstrap works. Not used for bootsCI=FALSE. Default: 231111.
 #' @param verbose Logical value: if TRUE, bootstrap process is output every 100 times. Not used for bootsCI=FALSE. Default: TRUE.

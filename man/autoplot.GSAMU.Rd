@@ -26,7 +26,7 @@
 
 \item{width.SI}{Width of horizon line which represents the sensitivity interval. Default: 2.75.}
 
-\item{width.CI}{Width of horizon line which represents the confidence interval of the population sensitivity interval. Default: 1.55.}
+\item{width.CI}{Width of horizon line which represents the confidence interval of the population sensitivity interval. Not used for bootsCI=FALSE in \code{GSAMU}. Default: 1.55.}
 
 \item{axis.title.x.size}{Size of x axis title. Default: 15.}
 
