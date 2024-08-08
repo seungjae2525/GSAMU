@@ -1,7 +1,6 @@
 ##
 GSAMU.binary <- function(data, fitmodel, exposure,
                          delta, k, p, bound){
-
   ##############################################################################
   ## calculate correlation matrix
   corrmatrix <- cor(data[,-1])
@@ -21,6 +20,9 @@ GSAMU.binary <- function(data, fitmodel, exposure,
   } else {
     stop("Link function must be \"logit\" or \"probit\"")
   }
+
+  ## Rearrange the bound (c(lower, upper) -> c(upper, lower))
+  bound <- c(bound[(k+p+1):(k+p+k+p)], bound[1:(k+p)])
 
   ##############################################################################
   ##
@@ -143,6 +145,10 @@ GSAMU.count.hazard <- function(data, fitmodel, exposure,
   alldelta <- sort(c(0, delta))
 
   ##############################################################################
+  ## Rearrange the bound (c(lower, upper) -> c(upper, lower))
+  bound <- c(bound[(k+p+1):(k+p+k+p)], bound[1:(k+p)])
+
+  ##
   val <- bound
   dir <- c(rep("<=", (k+p)), rep(">=", (k+p)))
   Amat <- as.matrix(rbind(diag(1,(k+p)), diag(1,(k+p))))
@@ -216,5 +222,115 @@ GSAMU.count.hazard <- function(data, fitmodel, exposure,
   df_all <- data.frame(df[,c("label", "delta", "coef", "Lower.SI", "Upper.SI")])
   rownames(df_all) <- NULL
 
+  return(df_all)
+}
+
+##
+GSAMU_alt <- function(data, fitmodel, exposure, delta, k, p,
+                      bound, bound.sigma2, link, hazard.model){
+  ##############################################################################
+  ## Coefficients of cox or glm model
+  if (is(fitmodel)[1] == "coxph") {
+    # Time to event outcome (time, status)
+    # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
+    beta <- fitmodel$coefficients # k+p vector
+
+    ## calculate correlation matrix
+    corrmatrix <- cor(data[,-c(1,2)])
+    invcor <- solve(corrmatrix)
+  } else if (is(fitmodel)[1] == "aalen") {
+    # Time to event outcome (time, status)
+    # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
+    # beta <- fitmodel$coef # k+p vector; using af
+    beta <- coef(fitmodel, digits=Inf)[,1] # k+p vector; using aalen
+
+    ## calculate correlation matrix
+    corrmatrix <- cor(data[,-c(1,2)])
+    invcor <- solve(corrmatrix)
+  } else {
+    # Count or binary outcome
+    # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
+    beta <- fitmodel$coefficients[-1] # k+p vector
+
+    ## calculate correlation matrix
+    corrmatrix <- cor(data[,-1])
+    invcor <- solve(corrmatrix)
+  }
+
+  ##############################################################################
+  ## Set the candidate of delta
+  alldelta <- sort(c(0, delta))
+
+  ## Upper and lower bounds
+  lower_bound <- bound[1:p]
+  upper_bound <- bound[(p+1):length(bound)]
+  resultdf <- matrix(c(lower_bound, sum(lower_bound), upper_bound, sum(upper_bound)),
+                     nrow=p+1, ncol=2, byrow=FALSE)
+  rownames(resultdf) <- c(exposure, "Joint effect")
+
+  ##
+  coef <- beta[c((k+1):(k+p))]
+  jointeffcoef <- sum(coef)
+  label <- c(exposure, "Joint effect")
+  df.init <- data.frame(label, resultdf, c(coef, jointeffcoef))
+  colnames(df.init) <- c("label", "bias_low", "bias_upper", "coef")
+
+  ##
+  if (!is.null(link) & is.null(hazard.model)) {
+    ## binary outcome
+    if (link == "logit") {
+      qq.min <- sqrt(1 + pi/8 * alldelta^{2} * min(bound.sigma2))
+      qq.max <- sqrt(1 + pi/8 * alldelta^{2} * max(bound.sigma2))
+    } else if (link == "probit") {
+      qq.min <- sqrt(1 + 1 * alldelta^{2} * min(bound.sigma2))
+      qq.max <- sqrt(1 + 1 * alldelta^{2} * max(bound.sigma2))
+    }
+  } else {
+    ## other outcomes
+    qq.min <- rep(1, length(alldelta))
+    qq.max <- rep(1, length(alldelta))
+  }
+
+  ##############################################################################
+  ##
+  df <- c()
+  for(ddd in 1:length(alldelta)){
+    delta.temp <- alldelta[ddd]
+
+    df_temp <- df.init
+
+    c_1 <- df_temp$coef * qq.min[ddd] - delta.temp*df_temp$bias_low
+    c_2 <- df_temp$coef * qq.max[ddd] - delta.temp*df_temp$bias_low
+    c_3 <- df_temp$coef * qq.min[ddd] - delta.temp*df_temp$bias_upper
+    c_4 <- df_temp$coef * qq.max[ddd] - delta.temp*df_temp$bias_upper
+
+    df_temp$cond_min <- pmin(c_1, c_2, c_3, c_4)
+    df_temp$cond_max <- pmax(c_1, c_2, c_3, c_4)
+
+    df_temp$c0 <- rep(delta.temp, dim(df_temp)[1])
+
+    if (ddd == 1) {
+      df <- df_temp
+    } else {
+      df <- rbind(df, df_temp)
+    }
+  }
+
+  colnames(df) <- c("label", "bias_low", "bias_upper", "model_output", "cond_min", "cond_max", "delta")
+  sensresult <- data.frame(df[,c("label", "model_output", "cond_min", "cond_max", "delta")])
+  rownames(sensresult) <- NULL
+
+  ##
+  df_all <- c()
+  exposure2 <- c(exposure, "Joint effect")
+  for (i in 1:length(exposure2)) {
+    df_temp <- sensresult[sensresult$label == exposure2[i], ]
+    df_all <- rbind(df_all, df_temp)
+  }
+
+  df_all <- as.data.frame(df_all)[, c(1, 5, 2, 3, 4)]
+  colnames(df_all) <- c("label", "delta", "coef", "Lower.SI", "Upper.SI")
+
+  # df_all$label <- factor(df_all$label, levels=unique(df_all$label))
   return(df_all)
 }

@@ -1,8 +1,6 @@
-GSAMU <- function(x, ...) UseMethod("GSAMU", x)
-
-#' @title Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding
+#' @title Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding based on an alternative assumption.
 #'
-#' @description \code{GSAMU()} is the main function of GSAMU package. It performs a novel sensitivity analysis for Gaussian, non-Gaussian, and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
+#' @description \code{GSAMU.alt()} is the main function of GSAMU package. It performs a novel sensitivity analysis for Gaussian, non-Gaussian, and time-to-event outcomes with multiple exposures. It also enables researchers to assess the vulnerability of the conditional exposure effects to the degree of unmeasured confounding for various outcome types.
 #'
 #' @param data A data frame in which contains outcome, measured confounders, exposures.
 #' @param outcome The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., c("survivaltime", "status")).
@@ -12,7 +10,8 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' @param confounder The vector of variable names for confounders. See Examples.
 #' @param exposure The vector of variable names for exposures. See Examples.
 #' @param delta The values of \eqn{\delta}s. The length of delta must be less than 6. See Examples.
-#' @param bound The range of \eqn{(\phi_{1}, \ldots, \phi_{k})} and \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\phi_{1,min}, \ldots, } \eqn{\phi_{k,min}, \rho_{1,min}, \ldots, \rho_{p,min}, \phi_{1,max}, \ldots, \phi_{k,max}, \rho_{1,max}, \ldots, \rho_{p,max}}). See Examples.
+#' @param bound The range of \eqn{(\rho_{1}, \ldots, \rho_{p})}. The order of inputs is (\eqn{\rho_{1,min}, \ldots, \rho_{p,min}, \rho_{1,max}, \ldots, } \eqn{\rho_{p,max}}). See Examples.
+#' @param bound.sigma2 The range of \eqn{\sigma_{c}^{2}}. The length of bound.sigma2 must be 1 (constant variance) or 2 (lower and upper bounds of variance). See Examples.
 #' @param bootsCI Logical value: if TRUE, The process to obtain the bootstrap confidence interval for the population sensitivity interval is carried out. Default: TRUE.
 #' @param B The number of bootstrap replicates. Not used for bootsCI=FALSE. Default: 1000
 #' @param seed The value of seed number when bootstrap works. Not used for bootsCI=FALSE. Default: 231111.
@@ -27,8 +26,8 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' \item{Lower.CI}{The lower confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed (i.e., bootsCI=TRUE).}
 #' \item{Upper.CI}{The upper confindece interval of sensitivity interval. Results are displayed only when bootstrap is performed (i.e., bootsCI=TRUE).}
 #'
-#' The results for the \code{GSAMU} are printed with the \code{\link{print.GSAMU}} function.
-#' To generate the plot of results for the \code{GSAMU}, use the \code{\link{autoplot.GSAMU}} function.
+#' The results for the \code{GSAMU.alt} are printed with the \code{\link{print.GSAMU}} function.
+#' To generate the plot of results for the \code{GSAMU.alt}, use the \code{\link{autoplot.GSAMU}} function.
 #'
 #' @details See Lee et al. (2024+) for details.
 #'
@@ -87,41 +86,45 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #'
 #' ##
 #' bound <- c(## lower bound
-#'            # sex   race   age
-#'            0.0, 0.0, 0.0,
 #'            # Retinyl palmitate    Retinol  trans-beta-carotene
 #'            rep(-0.19, 3),
 #'            # alpha-Tocopherol  gamma-Tocopherol
 #'            rep(-0.19, 2),
 #'
 #'            ## upper bound
-#'            # sex   race   age
-#'            0.32, 0.5, 0.29,
 #'            # Retinyl palmitate    Retinol  trans-beta-carotene
 #'            rep(0.15, 3),
 #'            # alpha-Tocopherol  gamma-Tocopherol
 #'            rep(0.10, 2))
 #'
 #' ## Sensitivity analysis
-#' binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
-#'                     link="logit", hazard.model=NULL,
-#'                     confounder=c("sex", "race", "age"),
-#'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
-#'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
-#'                     bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
+#' binary.re0 <- GSAMU.alt(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+#'                         link="logit", hazard.model=NULL,
+#'                         confounder=c("sex", "race", "age"),
+#'                         exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
+#'                                    "alpha-Tocopherol", "gamma-Tocopherol"),
+#'                         delta=c(0.11, 0.22, 0.33, 0.44), bound=bound, bound.sigma2=c(0.5, 1.5),
+#'                         bootsCI=FALSE, B=1000, seed=231111, verbose=TRUE)
 #' binary.re0$result
+#' print(binary.re0)
+#' autoplot(object=binary.re0, point.size=2.75, width.SI=1, width.CI=0.6,
+#'          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
+#'          myxlim=NULL)
 #'
 #' \dontrun{
 #' ## Sensitivity analysis with bootstrap percentile confidence interval
-#' binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
-#'                     link="logit", hazard.model=NULL,
-#'                     confounder=c("sex", "race", "age"),
-#'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
-#'                                "alpha-Tocopherol", "gamma-Tocopherol"),
-#'                     delta=c(0.11, 0.22, 0.33, 0.44), bound=bound,
-#'                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
+#' binary.re1 <- GSAMU.alt(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+#'                         link="logit", hazard.model=NULL,
+#'                         confounder=c("sex", "race", "age"),
+#'                         exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
+#'                                    "alpha-Tocopherol", "gamma-Tocopherol"),
+#'                         delta=c(0.11, 0.22, 0.33, 0.44), bound=bound, bound.sigma2=c(0.5, 1.5),
+#'                         bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 #' binary.re1$result
+#' print(binary.re1)
+#' autoplot(object=binary.re1, point.size=2.75, width.SI=1.55, width.CI=0.6,
+#'          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
+#'          myxlim=c(-2, 4))
 #' }
 #'
 #' @seealso
@@ -135,10 +138,10 @@ GSAMU <- function(x, ...) UseMethod("GSAMU", x)
 #' @keywords Methods
 #'
 #' @export
-GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
-                  confounder, exposure,
-                  delta, bound,
-                  bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE) {
+GSAMU.alt <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
+                      confounder, exposure,
+                      delta, bound, bound.sigma2,
+                      bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE) {
   ##############################################################################
   ##
   if (outcome.type == "binary") {
@@ -202,11 +205,14 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   if (p == 0) {
     stop("There must be at least one exposure.")
   }
-  if (length(bound) != (k + p)*2) {
+  if (length(bound) != (p)*2) {
     stop("\"bound\" is incorrect. Set again. See the Arguments explanation.")
-  } else if (sum(bound[1:(k+p)] <= bound[(k+p+1):(k+p+k+p)]) != k+p) {
+  } else if (sum(bound[1:(p)] <= bound[(p+1):(2*p)]) != p) {
     stop("There is a case in \"bound\" where the lower bound is greater than the upper bound.
          Reset the order of \"bound\". See the Arguments explanation.")
+  }
+  if (!(length(bound.sigma2) %in% c(1,2))) {
+    stop("\"bound.sigma2\" is incorrect. Set again. See the Arguments explanation.")
   }
   ##
   if (length(delta) < 1) {
@@ -269,7 +275,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
 
     data <- data.frame("Y"=dataY, scaled.dataX)
     if (link == "log") {
-      ## Fitting the regression model (log)
+      ## Fitting the regression model
       fitmodel <- glm(formula=Y ~ ., family=poisson(link=link), data=data)
     } else if (link == "identity") {
       ## Fitting the regression model (identity)
@@ -282,13 +288,9 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
 
   ##############################################################################
   ## Sensitivity analysis
-  if (outcome.type == "binary") {
-    sens.results <- GSAMU.binary(data=data, fitmodel=fitmodel, exposure=exposure,
-                                 delta=delta, k=k, p=p, bound=bound)
-  } else if (outcome.type %in% c("continuous", "count", "timetoevent")) {
-    sens.results <- GSAMU.count.hazard(data=data, fitmodel=fitmodel, exposure=exposure,
-                                       delta=delta, k=k, p=p, bound=bound)
-  }
+  sens.results <- GSAMU_alt(data=data, fitmodel=fitmodel, exposure=exposure,
+                            delta=delta, k=k, p=p, bound=bound, bound.sigma2=bound.sigma2,
+                            link=link, hazard.model=hazard.model)
 
   ## Bootstrap confidence interval
   if (bootsCI == TRUE) {
@@ -311,10 +313,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
         } else if (fitmodel$family$link == "logit") {
           fitmodel.boots <- glm(formula=formula(fitmodel), family=binomial(link="logit"), data=data_boot)
         }
-        re.boots <- GSAMU.binary(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
-                                 delta=delta, k=k, p=p, bound=bound)
-
-      } else if (outcome.type %in% c("continuous", "count", "timetoevent")) {
+      } else if (outcome.type %in% c("count", "timetoevent")) {
         if (outcome.type == "count") {
           data_boot[, c(2:ncol(data_boot))] <- scale(data_boot[, c(2:ncol(data_boot))])
           fitmodel.boots <- glm(formula=formula(fitmodel), family=poisson(link="log"), data=data_boot)
@@ -333,9 +332,10 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
             fitmodel.boots <- aalen(formula=formula_str, data=data_boot) # using timereg package
           }
         }
-        re.boots <- GSAMU.count.hazard(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
-                                       delta=delta, k=k, p=p, bound=bound)
       }
+      re.boots <- GSAMU_alt(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
+                            delta=delta, k=k, p=p, bound=bound,
+                            link=link, hazard.model=hazard.model)
 
       sens.results.boots[[ii]] <- re.boots
 
@@ -372,36 +372,19 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   }
 
   ## Rearrange results
-  levels.exposure <- c(gsub(c(" "), ".", exposure), "Joint effect")
-  levels.exposure <- gsub(c("-"), ".", levels.exposure)
-  sens.results$label <- factor(sens.results$label, levels=levels.exposure)
-  sens.results <- sens.results[order(sens.results$label), ]
   rownames(sens.results) <- NULL
-
-  # ##
-  # if(report.result == TRUE){
-  #   if (bootsCI == FALSE) {
-  #     temp.result <- sens.results
-  #     temp.result[,c(3:5)] <- round(temp.result[,c(3:5)], decimal.p)
-  #     print(temp.result)
-  #   } else {
-  #     temp.result <- sens.results
-  #     temp.result[,c(3:7)] <- round(temp.result[,c(3:7)], decimal.p)
-  #     print(temp.result)
-  #   }
-  # }
 
   ##
   if (bootsCI == FALSE) {
     returns <- list(result=sens.results, result.boots=NULL, outcome.type=outcome.type,
                     link=link, hazard.model=hazard.model,
                     n=nrow(data), confounder=confounder, exposure=exposure,
-                    bound=bound, bound.sigma2=NULL)
+                    bound=bound, bound.sigma2=bound.sigma2)
   } else {
     returns <- list(result=sens.results, result.boots=sens.results.boots, outcome.type=outcome.type,
                     link=link, hazard.model=hazard.model,
                     n=nrow(data), confounder=confounder, exposure=exposure,
-                    bound=bound, bound.sigma2=NULL)
+                    bound=bound, bound.sigma2=bound.sigma2)
   }
   structure(returns, class=c("GSAMU", class(returns)))
   # invisible(x=returns)

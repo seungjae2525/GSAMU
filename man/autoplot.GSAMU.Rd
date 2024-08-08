@@ -45,7 +45,7 @@ Plot for sensitivity analysis results
 ############################################
 ## Real data analysis for binary outcome ##
 ############################################
-### Log transformed of exposures. continuous variables are standardized
+### Log transformed of exposures.
 library(readr)
 ul=paste0("https://static-content.springer.com/esm/art\%3A10.1186\%2Fs12940-020-00644-4/",
           "MediaObjects/12940_2020_644_MOESM2_ESM.csv")
@@ -95,28 +95,25 @@ round(cbind("Est"=exp(coef(fit.glm)), exp(confint(fit.glm)),
       "P value"=summary(fit.glm)$coefficients[,4]), 3)
 
 ##
-beta <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)$coefficient
+bound <- c(## lower bound
+           # sex   race   age
+           0.0, 0.0, 0.0,
+           # Retinyl palmitate    Retinol  trans-beta-carotene
+           rep(-0.19, 3),
+           # alpha-Tocopherol  gamma-Tocopherol
+           rep(-0.19, 2),
 
-##
-bound <- c(## upper bound
-  # sex   race   age
-  0.32, 0.5, 0.29,
-  # Retinyl palmitate    Retinol  trans-beta-carotene
-  rep(0.15, 3),
-  # alpha-Tocopherol  gamma-Tocopherol
-  rep(0.10, 2),
-
-  ## lower bound
-  # sex   race   age
-  0.0, 0.0, 0.0,
-  # Retinyl palmitate    Retinol  trans-beta-carotene
-  rep(-0.19, 3),
-  # alpha-Tocopherol  gamma-Tocopherol
-  rep(-0.19, 2))
+           ## upper bound
+           # sex   race   age
+           0.32, 0.5, 0.29,
+           # Retinyl palmitate    Retinol  trans-beta-carotene
+           rep(0.15, 3),
+           # alpha-Tocopherol  gamma-Tocopherol
+           rep(0.10, 2))
 
 ## Sensitivity analysis
-binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
-                    hazard.model=NULL,
+binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+                    link="logit", hazard.model=NULL,
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
@@ -128,8 +125,8 @@ autoplot(object=binary.re0, point.size=2.75, width.SI=1, width.CI=0.6,
 
 \dontrun{
 ## Sensitivity analysis with bootstrap percentile confidence interval
-binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
-                    hazard.model=NULL,
+binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+                    link="logit", hazard.model=NULL,
                     confounder=c("sex", "race", "age"),
                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
                                "alpha-Tocopherol", "gamma-Tocopherol"),
@@ -137,7 +134,7 @@ binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary
                     bootsCI=TRUE, B=1000, seed=231111, verbose=TRUE)
 autoplot(object=binary.re1, point.size=2.75, width.SI=1.55, width.CI=0.6,
          axis.title.x.size=15, axis.text.size=16, legend.text.size=15,
-         myxlim=myxlim=c(-2, 4))
+         myxlim=c(-2, 4))
 }
 
 }
@@ -147,6 +144,6 @@ Sensitivity analysis for effects of multiple exposures in the presence of unmeas
 \emph{xxx}. DOI: xxx.
 }
 \seealso{
-\code{\link[GSAMU]{GSAMU}}
+\code{\link[GSAMU]{GSAMU}}, \code{\link[GSAMU]{GSAMU.alt}}
 }
 \keyword{Plot}

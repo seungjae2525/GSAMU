@@ -12,7 +12,7 @@
 #' ############################################
 #' ## Real data analysis for binary outcome ##
 #' ############################################
-#' ### Log transformed of exposures. continuous variables are standardized
+#' ### Log transformed of exposures.
 #' library(readr)
 #' ul=paste0("https://static-content.springer.com/esm/art%3A10.1186%2Fs12940-020-00644-4/",
 #'           "MediaObjects/12940_2020_644_MOESM2_ESM.csv")
@@ -62,28 +62,25 @@
 #'       "P value"=summary(fit.glm)$coefficients[,4]), 3)
 #'
 #' ##
-#' beta <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)$coefficient
+#' bound <- c(## lower bound
+#'            # sex   race   age
+#'            0.0, 0.0, 0.0,
+#'            # Retinyl palmitate    Retinol  trans-beta-carotene
+#'            rep(-0.19, 3),
+#'            # alpha-Tocopherol  gamma-Tocopherol
+#'            rep(-0.19, 2),
 #'
-#' ##
-#' bound <- c(## upper bound
-#'   # sex   race   age
-#'   0.32, 0.5, 0.29,
-#'   # Retinyl palmitate    Retinol  trans-beta-carotene
-#'   rep(0.15, 3),
-#'   # alpha-Tocopherol  gamma-Tocopherol
-#'   rep(0.10, 2),
-#'
-#'   ## lower bound
-#'   # sex   race   age
-#'   0.0, 0.0, 0.0,
-#'   # Retinyl palmitate    Retinol  trans-beta-carotene
-#'   rep(-0.19, 3),
-#'   # alpha-Tocopherol  gamma-Tocopherol
-#'   rep(-0.19, 2))
+#'            ## upper bound
+#'            # sex   race   age
+#'            0.32, 0.5, 0.29,
+#'            # Retinyl palmitate    Retinol  trans-beta-carotene
+#'            rep(0.15, 3),
+#'            # alpha-Tocopherol  gamma-Tocopherol
+#'            rep(0.10, 2))
 #'
 #' ## Sensitivity analysis
-#' binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
-#'                     hazard.model=NULL,
+#' binary.re0 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+#'                     link="logit", hazard.model=NULL,
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
@@ -93,8 +90,8 @@
 #'
 #' \dontrun{
 #' ## Sensitivity analysis with bootstrap percentile confidence interval
-#' binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary", link="logit",
-#'                     hazard.model=NULL,
+#' binary.re1 <- GSAMU(data=data_r4, outcome="triglyceride_b", outcome.type="binary",
+#'                     link="logit", hazard.model=NULL,
 #'                     confounder=c("sex", "race", "age"),
 #'                     exposure=c("Retinyl palmitate", "Retinol", "trans-beta-carotene",
 #'                                "alpha-Tocopherol", "gamma-Tocopherol"),
@@ -106,11 +103,11 @@
 #' @keywords Print
 #'
 #' @seealso
-#'  \code{\link[GSAMU]{GSAMU}}
+#'  \code{\link[GSAMU]{GSAMU}}, \code{\link[GSAMU]{GSAMU.alt}}
 #'
 #' @export
 
-print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
+print.GSAMU <- function (x, digits=max(1L, getOption("digits") - 3L), ...){
 
   if (!inherits(x, "GSAMU")){
     stop("Argument 'x' must be an object of class \"GSAMU\".")
@@ -120,31 +117,47 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
 
   cat("\n")
   cat("Data information: \n")
-  cat("N =", xx$n, "\n")
+  cat("Sample size =", xx$n, "\n")
   cat("Number of confounders =", length(xx$confounder), "\n")
   cat("Number of exposures =", length(xx$exposure), "\n")
   cat("Outcome type =", ifelse(xx$outcome.type == "binary", "Binary",
-                               ifelse(xx$outcome.type == "count", "Count", "Time to event")), "\n")
+                               ifelse(xx$outcome.type == "count", "Count",
+                                      ifelse(xx$outcome.type == "continuous", "Continuous", "Time to event"))), "\n")
 
   if (xx$outcome.type %in% c("count", "binary")) {
     cat("Link function =", xx$link, "\n")
+  } else if (xx$outcome.type == "continuous") {
+    cat("Link function =", "identity", "\n")
   } else {
     cat("Hazard model =", xx$hazard.model, "\n")
   }
 
   ##
-  AA <- matrix(xx$bound, nrow=length(c(xx$confounder, xx$exposure)), ncol=2, byrow=FALSE)
-  AA <- AA[,c(2,1)]
-  rownames(AA) <- c(paste0("phi_", "(", xx$confounder, ")"),
-                    paste0("rho_", "(", xx$exposure, ")"))
-  colnames(AA) <- c("Lower bound", "Upper bound")
-  cat("\n")
-  cat("Range of sensitivity paramters: \n")
-  cat("For confounders \n")
-  print(AA[c(1:length(xx$confounder)), ])
-  cat("\n")
-  cat("For exposures \n")
-  print(AA[c((1+length(xx$confounder)):nrow(AA)), ])
+  if (is.null(xx$bound.sigma2)) {
+    AA <- matrix(xx$bound, nrow=length(c(xx$confounder, xx$exposure)), ncol=2, byrow=FALSE)
+    rownames(AA) <- c(paste0("phi_", "(", xx$confounder, ")"),
+                      paste0("rho_", "(", xx$exposure, ")"))
+    colnames(AA) <- c("Lower bound", "Upper bound")
+    cat("\n")
+    cat("Range of sensitivity paramters: \n")
+    cat("For confounders \n")
+    print(AA[c(1:length(xx$confounder)), ])
+    cat("\n")
+    cat("For exposures \n")
+    print(AA[c((1+length(xx$confounder)):nrow(AA)), ])
+  } else {
+    AA <- matrix(xx$bound, nrow=length(c(xx$exposure)), ncol=2, byrow=FALSE)
+    rownames(AA) <- c(paste0("rho_", "(", xx$exposure, ")"))
+    colnames(AA) <- c("Lower bound", "Upper bound")
+    cat("\n")
+    cat("Range of sensitivity paramters: \n")
+    cat("For exposures \n")
+    print(AA[c(1:nrow(AA)), ])
+
+    cat("\n")
+    cat("Range of variance of distribution of U | (L,X): \n")
+    cat(paste0("[", xx$bound.sigma2[1], ", ", xx$bound.sigma2[2], "]"))
+  }
 
   ##
   delta <- unique(xx$result$delta)
@@ -163,7 +176,7 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
     if (xx$link == "logit") {
       effect.name <- "Conditional log-odds ratio"
     } else {
-      effect.name <- "Conditional single- and joint-exposure effects"
+      effect.name <- "Conditional exposure effects"
     }
   }
 
@@ -175,7 +188,7 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
     for (i in 1:length(unique.label)) {
       cat(paste0(i, ". ", c(xx$exposure, "Joint effect")[i], " \n"))
       xx.temp <- xx$result[xx$result$label == unique.label[i], ]
-      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta = 0
+      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta=0
       tmp1 <- paste0(sprintf(paste0("%.", digits, "f"), xx.temp$coef), " [",
                      sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
                      sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]")
@@ -192,7 +205,7 @@ print.GSAMU <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
     for (i in 1:length(unique.label)) {
       cat(paste0(i, ". ", c(xx$exposure, "Joint effect")[i], " \n"))
       xx.temp <- xx$result[xx$result$label == unique.label[i], ]
-      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta = 0
+      xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta=0
       tmp1 <- cbind(sprintf(paste0("%.", digits, "f"), xx.temp$coef),
                     paste0("[", sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
                            sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]"),

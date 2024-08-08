@@ -2,7 +2,7 @@
 #' @aliases GSAMU-package
 "_PACKAGE"
 
-#' @title GSAMU: Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes
+#' @title Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes
 #'
 #' @name GSAMU-package
 #'
@@ -21,7 +21,7 @@
 #' @import timereg
 #'
 #' @importFrom ggplot2 autoplot
-#' @importFrom stats cor glm binomial coef formula poisson quantile sd as.formula
+#' @importFrom stats cor glm binomial coef formula poisson quantile sd as.formula lm
 #' @importFrom methods is
 ## usethis namespace: end
 NULL
