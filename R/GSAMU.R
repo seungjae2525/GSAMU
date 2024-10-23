@@ -368,7 +368,7 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
                 .groups="keep")
 
     ## Merge the bootstrap results with sensitivity analysis results
-    sens.results <- merge(sens.results, results.mat2, by=c("label", "delta"))
+    sens.results <- merge(sens.results, results.mat2, by=c("label", "delta"), sort=FALSE)
   }
 
   ## Rearrange results
