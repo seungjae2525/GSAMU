@@ -111,6 +111,17 @@ GSAMU.binary <- function(data, fitmodel, exposure,
     df_all <- rbind(df_all, df_temp)
   }
 
+
+  df_all2 <- c()
+  exposure2 <- c(names(beta[-c(1:k)]), "Joint effect")
+  for (i in 1:length(exposure2)) {
+    df_temp <- df_all[df_all$label == exposure2[i], ]
+    df_all2 <- rbind(df_all2, df_temp)
+  }
+
+  df_all <- df_all2
+  rownames(df_all) <- NULL
+
   # df_all$label <- factor(df_all$label, levels=unique(df_all$label))
   return(df_all)
 }
@@ -242,6 +253,16 @@ GSAMU.count.hazard <- function(data, fitmodel, exposure,
   df_all <- data.frame(df[,c("label", "delta", "coef", "Lower.SI", "Upper.SI")])
   rownames(df_all) <- NULL
 
+  df_all2 <- c()
+  exposure2 <- c(exposure, "Joint effect")
+  for (i in 1:length(exposure2)) {
+    df_temp <- df_all[df_all$label == exposure2[i], ]
+    df_all2 <- rbind(df_all2, df_temp)
+  }
+
+  df_all <- df_all2
+  rownames(df_all) <- NULL
+
   return(df_all)
 }
 
@@ -350,6 +371,7 @@ GSAMU_alt <- function(data, fitmodel, exposure, delta, k, p,
 
   df_all <- as.data.frame(df_all)[, c(1, 5, 2, 3, 4)]
   colnames(df_all) <- c("label", "delta", "coef", "Lower.SI", "Upper.SI")
+  rownames(df_all) <- NULL
 
   # df_all$label <- factor(df_all$label, levels=unique(df_all$label))
   return(df_all)
