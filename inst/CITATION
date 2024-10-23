@@ -1,0 +1,13 @@
+citHeader("To cite package 'GSAMU' in publications use:")
+
+bibentry("Article",
+  title   = "Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes",
+  author  = c("Seungjae Lee", "Boram Jeong", "Donghwan Lee", "Woojoo Lee"),
+  journal = "Biometrical Journal",
+  year    = "2024",
+  textVersion = paste("Lee, S., Jeong. B., Lee. D., Lee, W.",
+                          "Sensitivity analysis for effects of multiple exposures in the presence of unmeasured confounding: non-Gaussian and time-to-event outcomes.",
+                          "Biometrical Journal. 2024.")
+)
+
+citFooter("DOI: xxx")

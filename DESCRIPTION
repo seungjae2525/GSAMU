@@ -1,5 +1,5 @@
 Package: GSAMU
-Version: 1.1
+Version: 1.2
 Title: Generalized Sensitivity Analysis for Multiple Exposures in
         Presence of Unmeasured Confounding
 Description: GSAMU is a package for accommodating statistical models involving Gaussian, non-Gaussian, and time-to-event outcome variables and multiple exposures, proving indispensable in the context of unmeasured confounding. 
@@ -31,5 +31,5 @@ Author: Seungjae Lee [aut, cre],
     Boram Jeong [aut],
     Donghwan Lee [aut],
     Woojoo Lee [aut]
-Packaged: 2024-08-08 06:44:59 UTC; seung
+Packaged: 2024-10-23 03:50:57 UTC; seung
 Maintainer: Seungjae Lee <seungjae2525@gmail.com>

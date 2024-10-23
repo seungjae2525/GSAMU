@@ -72,7 +72,14 @@ GSAMU.binary <- function(data, fitmodel, exposure,
     }
 
     ## for joint effect
-    a <- c(sum(beta[-c(1:k)]), -delta.temp*colSums(invcor[-c(1:k),]))
+    if (p == 1) {
+      # For single exposure
+      a <- c(sum(beta[-c(1:k)]), -delta.temp*invcor[-c(1:k),])
+    } else {
+      # For multiple exposures
+      a <- c(sum(beta[-c(1:k)]), -delta.temp*colSums(invcor[-c(1:k),]))
+    }
+
     mycop_max <- cop(f=linfun(a=a, name="Obj.function"),
                      lc=lincon(A=Amat, dir=dir, val=val, name=seq(1,dim(Amat)[1])),
                      qc=quadcon(smallA, d=0, dir="<=", val=(1+delta.temp^2*qq), use=TRUE),
@@ -162,16 +169,29 @@ GSAMU.count.hazard <- function(data, fitmodel, exposure,
 
   ## Joint bias
   forjointmyq3 <- myQ3[,-c(1:k)]
-  # Max
-  mycop_max <- cop(f=linfun(a=rowSums(forjointmyq3), name="Obj.function"),
-                   lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
-                   qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
-                   max=TRUE)
-  # Min
-  mycop_min <- cop(f=linfun(a=rowSums(forjointmyq3), name="Obj.function"),
-                   lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
-                   qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
-                   max=FALSE)
+  if (p == 1) {
+    # Max
+    mycop_max <- cop(f=linfun(a=forjointmyq3, name="Obj.function"),
+                     lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
+                     qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
+                     max=TRUE)
+    # Min
+    mycop_min <- cop(f=linfun(a=forjointmyq3, name="Obj.function"),
+                     lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
+                     qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
+                     max=FALSE)
+  } else {
+    # Max
+    mycop_max <- cop(f=linfun(a=rowSums(forjointmyq3), name="Obj.function"),
+                     lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
+                     qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
+                     max=TRUE)
+    # Min
+    mycop_min <- cop(f=linfun(a=rowSums(forjointmyq3), name="Obj.function"),
+                     lc=lincon(A=Amat, dir=dir, val=val, name=seq(1, (k+p)*2)),
+                     qc=quadcon(Q=myQ3, d=0, dir="<=", val=1, use=TRUE),
+                     max=FALSE)
+  }
 
   res_max <- solvecop(op=mycop_max, solver="alabama", quiet=TRUE)
   res_min <- solvecop(op=mycop_min, solver="alabama", quiet=TRUE)
