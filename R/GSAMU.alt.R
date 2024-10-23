@@ -149,28 +149,28 @@ GSAMU.alt <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
       stop("For binary outcome, only logit or probit link function is allowed.")
     }
     if (!is.null(hazard.model)) {
-      warning("For binary outcome, \"hazard.model\" does not used.")
+      warning(paste0("For binary outcome, \"hazard.model\" does not used (i.e., ", hazard.model," is not used)."))
     }
   } else if (outcome.type == "count") {
     if (link != "log") {
       stop("For count outcome, only log link function is allowed.")
     }
     if (!is.null(hazard.model)) {
-      warning("For count outcome, \"hazard.model\" does not used.")
+      warning(paste0("For count outcome, \"hazard.model\" does not used (i.e., ", hazard.model," is not used)."))
     }
   } else if (outcome.type == "continuous") {
     if (link != "identity") {
       stop("For continuous outcome, only identity link function is allowed.")
     }
     if (!is.null(hazard.model)) {
-      warning("For continuous outcome, \"hazard.model\" does not used.")
+      warning(paste0("For continuous outcome, \"hazard.model\" does not used (i.e., ", hazard.model," is not used)."))
     }
   } else if (outcome.type == "timetoevent") {
     if (!(hazard.model %in% c("coxph", "ah"))) {
       stop("For time-to-event outcome, only coxph (Cox PH model) or ah (additive hazard model) is allowed.")
     }
     if (!is.null(link)) {
-      warning("For time-to-event outcome, \"link\" function does not used.")
+      warning(paste0("For time-to-event outcome, \"link\" function does not used (i.e., ", link," is not used)."))
     }
   } else {
     stop("\"outcome.type\" is incorrect. This must be one of \"continuous\", \"count\", \"binary\", or \"timetoevent\". Set again. See the Arguments explanation.")
@@ -296,7 +296,7 @@ GSAMU.alt <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   if (bootsCI == TRUE) {
     ## Check whether data are scaled
     if (sum(round(apply(dataX, 2, mean), 5) == 0) == ncol(dataX) | sum(round(apply(dataX, 2, sd), 5) == 1) == ncol(dataX)) {
-      stop("Scaled data cannot be used when calculating bootstrap confidence interval.")
+      stop("Scaled data cannot be used when calculating bootstrap confidence interval. Put unscaled data.")
     }
 
     ## Bootstrap results
@@ -334,7 +334,7 @@ GSAMU.alt <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
         }
       }
       re.boots <- GSAMU_alt(data=data_boot, fitmodel=fitmodel.boots, exposure=exposure,
-                            delta=delta, k=k, p=p, bound=bound,
+                            delta=delta, k=k, p=p, bound=bound, bound.sigma2=bound.sigma2,
                             link=link, hazard.model=hazard.model)
 
       sens.results.boots[[ii]] <- re.boots

@@ -255,26 +255,26 @@ GSAMU_alt <- function(data, fitmodel, exposure, delta, k, p,
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
     beta <- fitmodel$coefficients # k+p vector
 
-    ## calculate correlation matrix
-    corrmatrix <- cor(data[,-c(1,2)])
-    invcor <- solve(corrmatrix)
+    # ## calculate correlation matrix
+    # corrmatrix <- cor(data[,-c(1,2)])
+    # invcor <- solve(corrmatrix)
   } else if (is(fitmodel)[1] == "aalen") {
     # Time to event outcome (time, status)
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
     # beta <- fitmodel$coef # k+p vector; using af
     beta <- coef(fitmodel, digits=Inf)[,1] # k+p vector; using aalen
 
-    ## calculate correlation matrix
-    corrmatrix <- cor(data[,-c(1,2)])
-    invcor <- solve(corrmatrix)
+    # ## calculate correlation matrix
+    # corrmatrix <- cor(data[,-c(1,2)])
+    # invcor <- solve(corrmatrix)
   } else {
     # Count or binary outcome
     # h*(L,Xs+1,X-s) - h*(L,Xs,X-s)
     beta <- fitmodel$coefficients[-1] # k+p vector
 
-    ## calculate correlation matrix
-    corrmatrix <- cor(data[,-1])
-    invcor <- solve(corrmatrix)
+    # ## calculate correlation matrix
+    # corrmatrix <- cor(data[,-1])
+    # invcor <- solve(corrmatrix)
   }
 
   ##############################################################################

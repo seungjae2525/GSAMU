@@ -189,12 +189,13 @@ print.GSAMU <- function (x, digits=max(1L, getOption("digits") - 3L), ...){
       cat(paste0(i, ". ", c(xx$exposure, "Joint effect")[i], " \n"))
       xx.temp <- xx$result[xx$result$label == unique.label[i], ]
       xx.temp <- xx.temp[-which.0.delta, ] # remove row with delta=0
-      tmp1 <- paste0(sprintf(paste0("%.", digits, "f"), xx.temp$coef), " [",
-                     sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
-                     sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]")
+      tmp1 <- cbind(sprintf(paste0("%.", digits, "f"), xx.temp$coef),
+                    paste0("[", sprintf(paste0("%.", digits, "f"), xx.temp$Lower.SI), ", ",
+                           sprintf(paste0("%.", digits, "f"), xx.temp$Upper.SI), "]"))
       tmp1 <-data.frame(tmp1)
-      rownames(tmp1) <- paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta])
-      colnames(tmp1) <- c(effect.name)
+      colnames(tmp1) <- c(effect.name, 'Sensitivity interval')
+      rownames(tmp1) <- c(paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
+      #
       if (max(delta[-which.0.delta]) < 0) {
         tmp1 <- tmp1[rev(1:nrow(tmp1)), , drop=FALSE]
       }
@@ -212,9 +213,9 @@ print.GSAMU <- function (x, digits=max(1L, getOption("digits") - 3L), ...){
                     paste0("[", sprintf(paste0("%.", digits, "f"), xx.temp$Lower.CI), ", ",
                            sprintf(paste0("%.", digits, "f"), xx.temp$Upper.CI), "]"))
       tmp1 <- data.frame(tmp1)
-      tmp1 <- rbind(c("Effect size", 'Sensitivity interval', 'Confidence interval'), tmp1)
-      rownames(tmp1) <- c("", paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
-      colnames(tmp1) <- c(effect.name, "", "")
+      colnames(tmp1) <- c(effect.name, 'Sensitivity interval', 'Confidence interval')
+      rownames(tmp1) <- c(paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
+
       print(tmp1)
       cat("\n")
     }
