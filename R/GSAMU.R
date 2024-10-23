@@ -372,8 +372,10 @@ GSAMU <- function(data, outcome, outcome.type, link=NULL, hazard.model=NULL,
   }
 
   ## Rearrange results
-  levels.exposure <- c(gsub(c(" "), ".", exposure), "Joint effect")
-  levels.exposure <- gsub(c("-"), ".", levels.exposure)
+  # levels.exposure <- c(gsub(c(" "), ".", exposure), "Joint effect")
+  # levels.exposure <- gsub(c("-"), ".", levels.exposure)
+  levels.exposure <- c(exposure, "Joint effect")
+  sens.results$label <- rep(levels.exposure, times=length(unique(sens.results$delta)))
   sens.results$label <- factor(sens.results$label, levels=levels.exposure)
   sens.results <- sens.results[order(sens.results$label), ]
   rownames(sens.results) <- NULL

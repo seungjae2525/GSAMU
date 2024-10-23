@@ -155,8 +155,7 @@ print.GSAMU <- function (x, digits=max(1L, getOption("digits") - 3L), ...){
     print(AA[c(1:nrow(AA)), ])
 
     cat("\n")
-    cat("Range of variance of distribution of U | (L,X): \n")
-    cat(paste0("[", xx$bound.sigma2[1], ", ", xx$bound.sigma2[2], "]"))
+    cat(paste0("Range of variance for distribution of U | (L,X): [", xx$bound.sigma2[1], ", ", xx$bound.sigma2[2], "] \n"))
   }
 
   ##
