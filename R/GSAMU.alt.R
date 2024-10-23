@@ -2,7 +2,7 @@
 #'
 #' @description \code{GSAMU.alt()} is an alternative sensitivity analysis method using assumption for the conditional distribution of U | (L, X) rather than for the joint distribution of (U, L, X).
 #'
-#' @param data A data frame in which contains outcome, measured confounders, and exposures.
+#' @param data A data frame in which contains outcome, measured confounders, and exposures. The variable(s) not used in "outcome" argument will be scaled to mean 0 and variance 1, and then used in the sensitivity analysis. If you use pre-scaled data, you cannot obtain the bootstrap confidence interval for the population sensitivity interval. If you want to obtain the bootstrap confidence interval, use the original, unscaled data.
 #' @param outcome The name of variable for outcome. For continuous, count, and binary outcomes, a single character for outcome is specified. For time-to-event outcome, two characters corresponding to survival time and status are specified (i.e., outcome=c("survivaltime", "status")).
 #' @param outcome.type The type of outcome variable. Possible values are "continuous" (for continuous outcome), "count" (for count outcome), "binary" (for binary outcome), or "timetoevent" (for time-to-event outcome).
 #' @param link The specification for the model link function. Possible values are "identity" (for continuous outcome), "log" (for count outcome), "probit" (for binary outcome), or "logit" (for binary outcome). Not used for outcome.type="timetoevent".
@@ -78,8 +78,10 @@
 #'                     "alpha-Tocopherol", "gamma-Tocopherol")
 #' data_r4 <- usedata
 #'
-#' ## glm fitting (working regression model)
-#' fit.glm <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4)
+#' ## glm fitting (working regression model) with scaled dataset
+#' data_r4_scaled <- data_r4
+#' data_r4_scaled[, -1] <- scale(data_r4_scaled[, -1])
+#' fit.glm <- glm(triglyceride_b~., family=binomial(link="logit"), data=data_r4_scaled)
 #' summary(fit.glm)
 #' round(cbind("Est"=exp(coef(fit.glm)), exp(confint(fit.glm)),
 #'       "P value"=summary(fit.glm)$coefficients[,4]), 3)

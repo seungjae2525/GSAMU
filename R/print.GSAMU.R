@@ -214,7 +214,10 @@ print.GSAMU <- function (x, digits=max(1L, getOption("digits") - 3L), ...){
       tmp1 <- data.frame(tmp1)
       colnames(tmp1) <- c(effect.name, 'Sensitivity interval', 'Confidence interval')
       rownames(tmp1) <- c(paste0(rep(expression(delta), times=nrow(xx.temp)), '=', delta[-which.0.delta]))
-
+      #
+      if (max(delta[-which.0.delta]) < 0) {
+        tmp1 <- tmp1[rev(1:nrow(tmp1)), , drop=FALSE]
+      }
       print(tmp1)
       cat("\n")
     }
